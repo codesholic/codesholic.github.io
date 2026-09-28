@@ -1,468 +1,1114 @@
-<html lang="ko"><head><style>
-    .utterances {
-        position: relative;
-        box-sizing: border-box;
-        width: 100%;
-        max-width: 760px;
-        margin-left: auto;
-        margin-right: auto;
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>박형준 | Server Backend Engineer</title>
+<meta name="description" content="20년차 서버 백엔드 엔지니어 · Application Architect 박형준의 포트폴리오">
+<meta property="og:title" content="박형준 | Server Backend Engineer">
+<meta property="og:description" content="대규모 트래픽을 견디는 백엔드를 설계하고, Kubernetes 위에서 예측 가능하게 운영합니다.">
+<meta property="og:url" content="https://codesholic.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<link rel="canonical" href="https://codesholic.github.io/">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+  /* ── Tokens ─────────────────────────────────────────────── */
+  :root {
+    color-scheme: dark;
+    --bg: #0f172a;
+    --surface: rgba(30, 41, 59, 0.5);
+    --line: rgba(148, 163, 184, 0.12);
+    --text: #94a3b8;
+    --text-strong: #e2e8f0;
+    --text-muted: #64748b;
+
+    --accent: #5eead4;
+    --accent-bg: rgba(45, 212, 191, 0.1);
+    --spot: rgba(29, 78, 216, 0.15);
+
+    --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.7;
+    letter-spacing: -0.01em;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent); color: var(--bg); }
+  a { color: inherit; text-decoration: none; }
+  a:focus-visible, button:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+  ul, ol { margin: 0; padding: 0; list-style: none; }
+  h1, h2, h3, p { margin: 0; }
+  strong { color: var(--text-strong); font-weight: 600; }
+
+  /* ── Cursor spotlight ───────────────────────────────────── */
+  .spotlight {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    transition: background 0.3s;
+    display: none;
+  }
+  @media (min-width: 1024px) { .spotlight { display: block; } }
+
+  /* ── Layout ─────────────────────────────────────────────── */
+  .shell {
+    max-width: 1280px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: 48px 24px;
+  }
+  @media (min-width: 768px) { .shell { padding: 80px 48px; } }
+  @media (min-width: 1024px) {
+    .shell {
+      padding: 0 96px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
     }
-    .utterances-frame {
-        color-scheme: light;
-        position: absolute;
-        left: 0;
-        right: 0;
-        width: 1px;
-        min-width: 100%;
-        max-width: 100%;
-        height: 100%;
-        border: 0;
+    .side {
+      position: sticky;
+      top: 0;
+      width: 38%;
+      max-height: 100vh;
+      padding-block: 96px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
+    .content { width: 60%; padding-block: 96px; }
+    .content > .section:last-child { margin-bottom: 0; }
+  }
+
+  /* ── Side / Hero ────────────────────────────────────────── */
+  .name {
+    color: var(--text-strong);
+    font-size: clamp(2.5rem, 5vw, 3.25rem);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+  }
+  .role {
+    margin-top: 14px;
+    color: var(--text-strong);
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+  .role span { color: var(--text-muted); font-weight: 400; }
+  .tagline {
+    margin-top: 16px;
+    max-width: 22rem;
+    line-height: 1.65;
+  }
+
+
+  .nav { display: none; }
+  @media (min-width: 1024px) {
+    .nav { display: block; margin-top: 56px; }
+    .nav ul { display: flex; flex-direction: column; gap: 4px; width: max-content; }
+    .nav a {
+      display: flex;
+      align-items: center;
+      padding-block: 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+    .nav .line {
+      width: 32px;
+      height: 1px;
+      margin-right: 16px;
+      background: var(--text-muted);
+      transition: width 0.2s, background 0.2s;
+    }
+    .nav a:hover, .nav a.active { color: var(--text-strong); }
+    .nav a:hover .line, .nav a.active .line { width: 64px; background: var(--text-strong); }
+  }
+
+  .side-foot {
+    margin-top: 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .status::before {
+    content: "";
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-bg);
+  }
+
+  /* ── Sections ───────────────────────────────────────────── */
+  .section { margin-bottom: 96px; scroll-margin-top: 64px; }
+  @media (min-width: 1024px) { .section { margin-bottom: 144px; scroll-margin-top: 96px; } }
+
+  .section-head {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    margin: 0 -24px 24px;
+    padding: 20px 24px;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  @media (min-width: 768px) { .section-head { margin-inline: -48px; padding-inline: 48px; } }
+  @media (min-width: 1024px) {
+    .section-head {
+      position: relative;
+      margin: 0 0 24px;
+      padding: 0;
+      background: none;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+    .section-head.sr-lg {
+      position: absolute; width: 1px; height: 1px; overflow: hidden;
+      clip: rect(0 0 0 0); white-space: nowrap;
+    }
+  }
+  .section-head h2 {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-strong);
+  }
+
+  /* About */
+  .about p + p { margin-top: 16px; }
+  .about .facts {
+    margin-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+  }
+  .about .facts span b { color: var(--text); font-weight: 500; }
+
+  /* ── Cards (Projects / Experience) ──────────────────────── */
+  .cards { display: flex; flex-direction: column; gap: 48px; }
+
+  .card {
+    position: relative;
+    display: grid;
+    gap: 8px;
+    transition: opacity 0.3s;
+  }
+  @media (min-width: 640px) {
+    .card { grid-template-columns: 8.75rem 1fr; gap: 16px 28px; }
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: -16px;
+    z-index: -1;
+    border-radius: 6px;
+    transition: background 0.3s, box-shadow 0.3s;
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .card::before { display: block; inset: -16px -24px; }
+    .card:hover::before {
+      background: var(--surface);
+      box-shadow: inset 0 1px 0 0 rgba(148, 163, 184, 0.1);
+      filter: drop-shadow(0 0 0 rgba(0,0,0,0.05));
+    }
+    .cards:hover > .card:not(:hover) { opacity: 0.5; }
+    .card:hover .card-title { color: var(--accent); }
+  }
+
+  .period {
+    padding-top: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.6;
+  }
+  .period {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .period span { display: block; white-space: nowrap; }
+  @media (max-width: 639px) {
+    .period { flex-direction: row; flex-wrap: wrap; gap: 4px 14px; }
+  }
+
+  .card-title {
+    color: var(--text-strong);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.45;
+    letter-spacing: -0.015em;
+    transition: color 0.2s;
+    text-wrap: balance;
+  }
+  .card-title .client { display: block; }
+  .card-title .sub { font-weight: 400; color: var(--text); }
+  .card-role {
+    margin-top: 4px;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+  .card-desc {
+    margin-top: 10px;
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+  .card-points {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.875rem;
+    line-height: 1.65;
+  }
+  .card-points li {
+    position: relative;
+    padding-left: 18px;
+  }
+  .card-points li::before {
+    content: "▹";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--accent);
+    font-size: 0.8125rem;
+  }
+  .num {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text-strong);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .metric {
+    margin-top: 14px;
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .metric b { color: var(--accent); font-weight: 600; }
+
+  .tags {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 6px;
+  }
+  .tags li {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--accent-bg);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    letter-spacing: 0;
+  }
+
+  /* In-progress badge */
+  .now {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+    width: max-content;
+    color: var(--accent);
+  }
+  .now::before {
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-bg);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 5px transparent; } }
+
+  /* Side project type label */
+  .period.kind span {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.6875rem;
+  }
+  .section-lede {
+    margin: -8px 0 40px;
+    font-size: 0.9375rem;
+  }
+
+  /* About: AI-native workflow */
+  .workflow { margin-top: 24px; }
+  .workflow-label {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-strong);
+  }
+  .workflow-label span {
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--text-muted);
+  }
+  .workflow .areas { margin-top: 10px; }
+  .about .workflow + p { margin-top: 24px; }
+
+  /* Featured card: work areas */
+  .areas {
+    margin: 18px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .areas div { display: grid; gap: 2px; }
+  @media (min-width: 640px) {
+    .areas div { grid-template-columns: 6.5rem 1fr; gap: 16px; }
+  }
+  .areas dt {
+    padding-top: 2px;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .areas dd {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.65;
+  }
+
+  /* Shorts pipeline: real 9-step sequence */
+  .pipeline {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 0;
+    counter-reset: step;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--text);
+  }
+  .pipeline li {
+    counter-increment: step;
+    display: inline-flex;
+    align-items: center;
+  }
+  .pipeline li::before {
+    content: counter(step);
+    margin-right: 5px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .pipeline li:not(:last-child)::after {
+    content: "›";
+    margin: 0 8px;
+    color: var(--text-muted);
+  }
+
+  /* Experience sub-projects */
+  .exp-company {
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .exp-count {
+    margin-left: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    vertical-align: 2px;
+  }
+  .exp-list {
+    margin-top: 14px;
+    padding-left: 16px;
+    border-left: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .exp-list li { display: grid; gap: 2px; }
+  .exp-list .p-name {
+    font-size: 0.875rem;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .exp-list .p-name i {
+    font-style: normal;
+    font-weight: 400;
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+    margin-left: 6px;
+  }
+  .exp-list .p-tech {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* Skills */
+  .skills { display: flex; flex-direction: column; gap: 28px; }
+  .skill-row { display: grid; gap: 10px; }
+  @media (min-width: 640px) {
+    .skill-row { grid-template-columns: 8.75rem 1fr; gap: 28px; }
+  }
+  .skill-row h3 {
+    padding-top: 5px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .skill-row .tags { margin-top: 0; }
+  .skill-row .tags.plain li {
+    background: transparent;
+    color: var(--text);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+
+
+  /* ── Print (A4) ─────────────────────────────────────────── */
+  @page { size: A4; margin: 14mm 14mm 16mm; }
+  @media print {
+    :root {
+      color-scheme: light;
+      --bg: #ffffff;
+      --surface: transparent;
+      --line: rgba(15, 23, 42, 0.14);
+      --text: #334155;
+      --text-strong: #0f172a;
+      --text-muted: #64748b;
+      --accent: #0f766e;
+      --accent-bg: rgba(13, 148, 136, 0.09);
+    }
+    html, body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { font-size: 10pt; line-height: 1.6; }
+    .spotlight, .nav { display: none !important; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+
+    .shell { display: block; max-width: none; min-height: 0; padding: 0; }
+    .side { position: static; width: auto; max-height: none; padding: 0 0 18px; margin-bottom: 22px;
+            border-bottom: 1px solid var(--line); display: flex; flex-direction: row;
+            justify-content: space-between; align-items: flex-end; gap: 24px; }
+    .name { font-size: 26pt; }
+    .role { margin-top: 6px; font-size: 13pt; }
+    .tagline { margin-top: 6px; max-width: none; }
+    .side-foot { margin: 0; }
+    .content { width: auto; padding: 0; }
+
+    .section { margin-bottom: 26px; }
+    .section-head, .section-head.sr-lg {
+      position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal;
+      margin: 0 0 12px; padding: 0 0 6px; background: none;
+      backdrop-filter: none; -webkit-backdrop-filter: none;
+      border-bottom: 2px solid var(--text-strong);
+      break-after: avoid;
+    }
+    .section-head h2 { font-size: 10pt; }
+    .section-lede { margin: 0 0 16px; }
+
+    .cards { gap: 20px; }
+    .card { grid-template-columns: 7.5rem 1fr; gap: 10px 20px; opacity: 1 !important; break-inside: avoid; }
+    .card.featured { break-inside: auto; }
+    .card::before { display: none !important; }
+    .card-title { break-after: avoid; }
+    .areas div, .card-points li, .exp-list li, .skill-row { break-inside: avoid; }
+    .skill-row { grid-template-columns: 7.5rem 1fr; gap: 20px; }
+    .skills { gap: 14px; }
+    .tags { gap: 5px 4px; }
+    .tags li { padding: 1px 9px; font-size: 8pt; }
+    .skill-row .tags.plain li { box-shadow: inset 0 0 0 1px var(--line); }
+    .now::before { box-shadow: none; }
+    p, li, dd { orphans: 3; widows: 3; }
+    #projects, #side-projects, #experience { break-before: page; }
+    .card.featured + .card.featured { break-before: page; }
+    .areas { margin-top: 12px; padding: 10px 0; gap: 7px; }
+    .areas dd { font-size: 9pt; line-height: 1.55; }
+    .card-desc { margin-top: 6px; }
+    .metric { margin-top: 8px; }
+    .card-points { margin-top: 8px; gap: 3px; }
+    .tags { margin-top: 10px; }
+  }
+
+  /* ── Motion ─────────────────────────────────────────────── */
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .rise { animation: rise 0.6s cubic-bezier(.2,.7,.2,1) both; }
+  .rise.d1 { animation-delay: 0.06s; }
+  .rise.d2 { animation-delay: 0.12s; }
+  .rise.d3 { animation-delay: 0.18s; }
+  .rise.d4 { animation-delay: 0.24s; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .rise { animation: none; }
+    .now::before { animation: none; }
+    *, *::before, *::after { transition: none !important; }
+  }
 </style>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="spotlight" id="spotlight" aria-hidden="true"></div>
 
-    <title>박형준 | 서버 백엔드 엔지니어</title><!-- Begin Jekyll SEO tag v2.8.0 -->
-    <meta name="generator" content="Jekyll v3.9.2">
-    <meta property="og:title" content="서버 백엔드 엔지니어">
-    <meta property="og:locale" content="en_US">
-    <meta name="description" content="이력서">
-    <meta property="og:description" content="이력서">
-    <link rel="canonical" href="https://codesholic.github.io/">
-    <meta property="og:url" content="https://codesholic.github.io/">
-    <meta property="og:site_name" content="서버 백엔드 엔지니어">
-    <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary">
-    <meta property="twitter:title" content="서버 백엔드 엔지니어">
-    <!-- End Jekyll SEO tag -->
-    <link rel="stylesheet" href="/assets/main.css">
-    <link rel="shortcut icon" type="image/x-icon" href=""><!-- Global site tag (gtag.js) - Google Analytics -->
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
+<div class="shell">
+  <!-- ───────────── Left: Profile ───────────── -->
+  <header class="side">
+    <div>
+      <h1 class="name rise"><a href="/">박형준</a></h1>
+      <p class="role rise d1">Server Backend Engineer <span>· Application Architect</span></p>
+      <p class="tagline rise d2">대규모 트래픽을 견디는 백엔드를 설계하고, Kubernetes 위에서 예측 가능하게 운영합니다.</p>
 
-        gtag('config', 'UA-148875666-1');
-    </script> <meta property="og:image" content="https://t1.daumcdn.net/cfile/tistory/2237674457FB7EA215"><style id="monica-reading-highlight-style">
-        .monica-reading-highlight {
-            animation: fadeInOut 1.5s ease-in-out;
-        }
 
-        @keyframes fadeInOut {
-            0%, 100% { background-color: transparent; }
-            30%, 70% { background-color: rgba(2, 118, 255, 0.20); }
-        }
-    </style></head>
-<body monica-id="ofpnmcalabcbjgholdjcjblkibolbppb" monica-version="7.9.1"><div class="container header-container">
-    <div class="row">
-        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-8 header-left">
-            <h1>박형준</h1>
-            <h2>서버 백엔드 엔지니어</h2>
-        </div>
-        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 header-right">
-            <ul class="icons no-print">
-                <li>
-                    <img src="/images/spring-boot.png" alt="Spring Boot" title="Spring Boot" style="width: 100px">
-                </li>
-                <li>
-                    <img src="/images/kubernetes-logo.png" alt="Spring Boot" title="Spring Boot" style="width: 50px">
-                </li>
-                <li>
-                    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Kubernetes</title><path d="M10.204 14.35l.007.01-.999 2.413a5.171 5.171 0 0 1-2.075-2.597l2.578-.437.004.005a.44.44 0 0 1 .484.606zm-.833-2.129a.44.44 0 0 0 .173-.756l.002-.011L7.585 9.7a5.143 5.143 0 0 0-.73 3.255l2.514-.725.002-.009zm1.145-1.98a.44.44 0 0 0 .699-.337l.01-.005.15-2.62a5.144 5.144 0 0 0-3.01 1.442l2.147 1.523.004-.002zm.76 2.75l.723.349.722-.347.18-.78-.5-.623h-.804l-.5.623.179.779zm1.5-3.095a.44.44 0 0 0 .7.336l.008.003 2.134-1.513a5.188 5.188 0 0 0-2.992-1.442l.148 2.615.002.001zm10.876 5.97l-5.773 7.181a1.6 1.6 0 0 1-1.248.594l-9.261.003a1.6 1.6 0 0 1-1.247-.596l-5.776-7.18a1.583 1.583 0 0 1-.307-1.34L2.1 5.573c.108-.47.425-.864.863-1.073L11.305.513a1.606 1.606 0 0 1 1.385 0l8.345 3.985c.438.209.755.604.863 1.073l2.062 8.955c.108.47-.005.963-.308 1.34zm-3.289-2.057c-.042-.01-.103-.026-.145-.034-.174-.033-.315-.025-.479-.038-.35-.037-.638-.067-.895-.148-.105-.04-.18-.165-.216-.216l-.201-.059a6.45 6.45 0 0 0-.105-2.332 6.465 6.465 0 0 0-.936-2.163c.052-.047.15-.133.177-.159.008-.09.001-.183.094-.282.197-.185.444-.338.743-.522.142-.084.273-.137.415-.242.032-.024.076-.062.11-.089.24-.191.295-.52.123-.736-.172-.216-.506-.236-.745-.045-.034.027-.08.062-.111.088-.134.116-.217.23-.33.35-.246.25-.45.458-.673.609-.097.056-.239.037-.303.033l-.19.135a6.545 6.545 0 0 0-4.146-2.003l-.012-.223c-.065-.062-.143-.115-.163-.25-.022-.268.015-.557.057-.905.023-.163.061-.298.068-.475.001-.04-.001-.099-.001-.142 0-.306-.224-.555-.5-.555-.275 0-.499.249-.499.555l.001.014c0 .041-.002.092 0 .128.006.177.044.312.067.475.042.348.078.637.056.906a.545.545 0 0 1-.162.258l-.012.211a6.424 6.424 0 0 0-4.166 2.003 8.373 8.373 0 0 1-.18-.128c-.09.012-.18.04-.297-.029-.223-.15-.427-.358-.673-.608-.113-.12-.195-.234-.329-.349-.03-.026-.077-.062-.111-.088a.594.594 0 0 0-.348-.132.481.481 0 0 0-.398.176c-.172.216-.117.546.123.737l.007.005.104.083c.142.105.272.159.414.242.299.185.546.338.743.522.076.082.09.226.1.288l.16.143a6.462 6.462 0 0 0-1.02 4.506l-.208.06c-.055.072-.133.184-.215.217-.257.081-.546.11-.895.147-.164.014-.305.006-.48.039-.037.007-.09.02-.133.03l-.004.002-.007.002c-.295.071-.484.342-.423.608.061.267.349.429.645.365l.007-.001.01-.003.129-.029c.17-.046.294-.113.448-.172.33-.118.604-.217.87-.256.112-.009.23.069.288.101l.217-.037a6.5 6.5 0 0 0 2.88 3.596l-.09.218c.033.084.069.199.044.282-.097.252-.263.517-.452.813-.091.136-.185.242-.268.399-.02.037-.045.095-.064.134-.128.275-.034.591.213.71.248.12.556-.007.69-.282v-.002c.02-.039.046-.09.062-.127.07-.162.094-.301.144-.458.132-.332.205-.68.387-.897.05-.06.13-.082.215-.105l.113-.205a6.453 6.453 0 0 0 4.609.012l.106.192c.086.028.18.042.256.155.136.232.229.507.342.84.05.156.074.295.145.457.016.037.043.09.062.129.133.276.442.402.69.282.247-.118.341-.435.213-.71-.02-.039-.045-.096-.065-.134-.083-.156-.177-.261-.268-.398-.19-.296-.346-.541-.443-.793-.04-.13.007-.21.038-.294-.018-.022-.059-.144-.083-.202a6.499 6.499 0 0 0 2.88-3.622c.064.01.176.03.213.038.075-.05.144-.114.28-.104.266.039.54.138.87.256.154.06.277.128.448.173.036.01.088.019.13.028l.009.003.007.001c.297.064.584-.098.645-.365.06-.266-.128-.537-.423-.608zM16.4 9.701l-1.95 1.746v.005a.44.44 0 0 0 .173.757l.003.01 2.526.728a5.199 5.199 0 0 0-.108-1.674A5.208 5.208 0 0 0 16.4 9.7zm-4.013 5.325a.437.437 0 0 0-.404-.232.44.44 0 0 0-.372.233h-.002l-1.268 2.292a5.164 5.164 0 0 0 3.326.003l-1.27-2.296h-.01zm1.888-1.293a.44.44 0 0 0-.27.036.44.44 0 0 0-.214.572l-.003.004 1.01 2.438a5.15 5.15 0 0 0 2.081-2.615l-2.6-.44-.004.005z"/></svg>
-                </li>
+      <nav class="nav rise d4" aria-label="섹션 이동">
+        <ul>
+          <li><a href="#about" class="active"><span class="line"></span><span>About</span></a></li>
+          <li><a href="#projects"><span class="line"></span><span>Projects</span></a></li>
+          <li><a href="#side-projects"><span class="line"></span><span>Side Projects</span></a></li>
+          <li><a href="#experience"><span class="line"></span><span>Experience</span></a></li>
+          <li><a href="#skills"><span class="line"></span><span>Skills</span></a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="side-foot rise d4">
+      <span class="status">Bucheon, KR</span>
+    </div>
+  </header>
+
+  <!-- ───────────── Right: Content ───────────── -->
+  <main class="content">
+
+    <!-- About -->
+    <section id="about" class="section about" aria-label="About">
+      <div class="section-head sr-lg"><h2>About</h2></div>
+      <p>
+        Java와 Spring, 그리고 Cloud &amp; Kubernetes를 기반으로 일해 온 <strong>20년차 서버 백엔드 개발자</strong>입니다.
+        동시접속 80만 명의 통합회원 에듀테크 서비스, MAU 200만 이상의 헬스케어 플랫폼 같은 서비스에서
+        <strong>분석·설계와 개발 리드</strong>를 맡아 백엔드 플랫폼과 클라우드 인프라를 만들어 왔습니다.
+      </p>
+      <p>
+        클라우드 환경에서 개발과 배포가 막힘없이 흘러가도록 on-premise Kubernetes 클러스터를 직접 설치하고 구성해
+        개발과 테스트를 진행합니다. 예측 가능한 개발 과정이 실질적인 가치를 만든다고 믿기 때문입니다.
+      </p>
+      <p>
+        최근에는 OpenStack 위에서 돌아가던 공공 레거시 시스템을 <strong>On-Prem Kubernetes와 GitOps 체계로 옮기고</strong>, 8개 외부 기관을 잇는 통합연계체계를 설계하고 있습니다.
+      </p>
+      <p>
+        최근 1년은 <strong>Claude Code와 Codex를 일하는 방식의 중심</strong>에 두었습니다.
+        분석, 설계 문서, 구현, 테스트, 서버 점검과 운영 문서까지 AI 에이전트와 나눠 맡고,
+        저는 방향을 정하고 결과를 검증하는 데 집중합니다. 덕분에 인프라 전환과 연계 시스템 설계, 여러 사이드 프로젝트를 한 사람의 속도 이상으로 끌고 갈 수 있었습니다.
+      </p>
+
+      <div class="workflow">
+        <p class="workflow-label">AI-Native Workflow<span>최근 1년</span></p>
+        <dl class="areas">
+          <div>
+            <dt>Analyze</dt>
+            <dd>현행 시스템 · 설정 · 로그를 에이전트로 조사하고, 근거 파일과 수치가 달린 진단 보고서로 정리</dd>
+          </div>
+          <div>
+            <dt>Build</dt>
+            <dd>Claude Code · Codex로 구현 · 테스트 · 리팩터링을 병렬로 진행. AGENTS.md · CLAUDE.md로 작업 규칙과 검증 순서를 명문화</dd>
+          </div>
+          <div>
+            <dt>Operate</dt>
+            <dd>서버 접근과 운영 작업을 전용 CLI와 에이전트 스킬로 표준화해, 점검 · 배포 · 장애 조사를 반복 가능한 절차로 전환</dd>
+          </div>
+          <div>
+            <dt>Verify</dt>
+            <dd>AI가 만든 결과는 테스트, 실측 수치, 원본 대조로 확인한 뒤에만 채택</dd>
+          </div>
+        </dl>
+      </div>
+
+      <p>
+        스스로를 탁월한 개발자라고 말하기보다, 꾸준히 배우고 적극적으로 소통하면서 팀과 함께 성장하는 개발자이고 싶습니다.
+      </p>
+      <div class="facts">
+        <span>born <b>1976</b></span>
+        <span>based in <b>경기 부천</b></span>
+        <span>focus <b>K8s · GitOps · MSA · AI-Native Dev</b></span>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="section" aria-label="Projects">
+      <div class="section-head"><h2>Projects</h2></div>
+      <ol class="cards">
+
+        <li class="card featured">
+          <p class="period"><span>2025.05 – 현재</span><span class="now">진행 중</span></p>
+          <div>
+            <h3 class="card-title"><span class="client">국토교통부 · KLIP</span><span class="sub">국토이용정보 통합플랫폼 인프라 · 플랫폼 전환</span></h3>
+            <p class="card-role">플랫폼 · 인프라 전환 담당 (프리랜서)</p>
+            <p class="card-desc">OpenStack 위 약 98대의 VM에서 운영 중이던 JBoss · HAProxy · GIS · EDB 기반 레거시 시스템을 마이그레이션하고,
+              On-Prem Kubernetes 환경으로 전환하고 있습니다. 개발환경도 운영과 같은 구조로 직접 구축하고, 개발팀이 새 환경에 익숙해지도록 도왔습니다.</p>
+
+            <p class="metric"><span><b>~98</b> VMs</span><span><b>OpenStack → Kubernetes</b></span><span>CDC 수집 <b>27K</b> events/s</span></p>
+
+            <dl class="areas">
+              <div>
+                <dt>Infra</dt>
+                <dd>OpenStack VM 약 98대 운영 (RHEL, 네트워크 · NAT, 스토리지, 리소스 관리). 개발환경은 Kolla-Ansible로 OpenStack을 직접 구축해 운영과 같은 구성으로 맞춤</dd>
+              </div>
+              <div>
+                <dt>K8s · DevOps</dt>
+                <dd>On-Prem Kubernetes 구축 · 설정, GitLab + Harbor + Argo CD GitOps 배포 체계, Skaffold 개발환경, 인증서 자동 갱신 체계. 폐쇄망 환경의 이미지 반입 경로 구성</dd>
+              </div>
+              <div>
+                <dt>Kafka CDC</dt>
+                <dd>Strimzi Kafka + Debezium 기반 PostgreSQL 17 Stage → Prod CDC 구축. 준비도 진단에서 PK 없는 테이블 문제를 찾아 파일럿 방식으로 전환하고, 파일럿 · 5개 테이블 카나리 운영 후 2,620개 테이블 단계별 확대 계획 수립.
+                  50만 건 트랜잭션을 Kafka에 <span class="num">27,274 events/s</span>로 수집, 16,416건 배치를 <span class="num">12.9s</span> 안에 Prod 반영. heartbeat로 WAL 보존량 <span class="num">396MB → 6MB</span>, 미사용 슬롯 정리, Grafana 모니터링</dd>
+              </div>
+              <div>
+                <dt>Network</dt>
+                <dd>외부 API 호출을 한 곳으로 모으는 Egress 게이트웨이를 3가지 안(공용 A/S · Istio · 전용 분리)으로 비교 설계 후 구축. nftables SNAT와 정책 라우팅, 10분 자동 롤백 적용, K8s 9개 노드 <span class="num">63/63</span> 검증 통과</dd>
+              </div>
+              <div>
+                <dt>Middleware</dt>
+                <dd>JBoss EAP 7.2 3노드 클러스터 설치 자동화, GitLab 패키지 레지스트리 기반 WAR 롤링 배포(SHA-256 검증). HAProxy 트래픽 구조 개선, Spring Batch 장애 분석</dd>
+              </div>
+              <div>
+                <dt>Database</dt>
+                <dd>EDB Postgres 4노드 HA(EFM) · pgpool 운영, 장애 · 성능 · 트랜잭션 문제 분석. 백업 점검으로 WAL 아카이빙 실패(PITR 불가 위험)를 찾아내고 백업 · 로그 보존 개선안 제시</dd>
+              </div>
+              <div>
+                <dt>AI</dt>
+                <dd>Claude Code · Codex 에이전트로 설계 문서 · 구현 · 테스트 · 서버 점검을 수행하고, 운영 작업용 CLI와 에이전트 스킬을 만들어 반복 업무를 표준화. LangGraph 기반 자동화와 운영 문서 Local RAG 구축</dd>
+              </div>
+              <div>
+                <dt>Onboarding</dt>
+                <dd>개발팀이 Kubernetes · GitOps 배포 흐름에 적응하도록 사용 가이드 작성과 기술 공유 진행</dd>
+              </div>
+            </dl>
+
+            <ul class="tags" aria-label="사용 기술">
+              <li>OpenStack</li><li>Kolla-Ansible</li><li>Kubernetes</li><li>Argo CD</li><li>Harbor</li><li>Skaffold</li><li>Strimzi Kafka</li><li>Debezium</li><li>nftables</li><li>JBoss EAP</li><li>EDB Postgres</li><li>LangGraph</li>
             </ul>
+          </div>
+        </li>
+
+        <li class="card featured">
+          <p class="period"><span>2026.08 – 현재</span><span class="now">진행 중</span></p>
+          <div>
+            <h3 class="card-title"><span class="client">국토교통부 · KLIP</span><span class="sub">통합연계체계 설계 · 구현</span></h3>
+            <p class="card-role">연계 아키텍처 설계 · 개발 (프리랜서)</p>
+            <p class="card-desc">KRAS · K-Geo · 정부24 · 토지이음 등 8개 외부 기관 · 시스템과의 송수신, WMS/WFS 공간정보 서비스, 연계 관리 포털을 하나로 운영하는 통합연계체계의 목표 아키텍처를 설계하고 핵심 서비스를 구현하고 있습니다.</p>
+
+            <p class="metric"><span><b>8</b>개 연계 기관</span><span><b>6</b>개 서비스</span><span><b>9</b>개 업무 영역 API</span></p>
+
+            <ul class="card-points">
+              <li>Edge(WAF · K8s Gateway API · Spring Cloud Gateway) · Data plane · Control plane 목표 아키텍처 수립. 기능 30여 개를 마이크로서비스 30개로 쪼개지 않고 초기 배포 단위 8–12개로 정리</li>
+              <li>표준 연계 인증 · 인가 설계 (API Key, Gateway · Route 매핑, 15개 테이블)와 Gateway · Identity 서비스 구현: 내부/외부 JWT 발급, Redis 단일 세션</li>
+              <li>지구단위계획 · 필지 · 토지이용계획 등 9개 업무 영역 Query/Gateway API 분석 · 구현. 편입필지는 자동화 테스트 <span class="num">168 + 41</span>개, 3개 지역 <span class="num">79,038</span>건 대조 검증</li>
+              <li>Quartz JDBC 클러스터 기반 Export 서비스, 연계 운영관리 화면 · DB 설계 (메뉴 9개, 테이블 20개)</li>
+              <li>헥사고날 Ports &amp; Adapters 기반 기관 어댑터 가이드 작성, 아키텍처 브리핑으로 팀과 구현 방향 공유</li>
+            </ul>
+
+            <ul class="tags" aria-label="사용 기술">
+              <li>Java 17</li><li>Spring Boot 4</li><li>Spring Cloud Gateway</li><li>MyBatis</li><li>PostgreSQL · PostGIS</li><li>Redis</li><li>JWT</li><li>Quartz</li><li>Kustomize</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="card">
+          <p class="period"><span>2024.03 – 2024.05</span></p>
+          <div>
+            <h3 class="card-title"><span class="client">KB국민은행</span><span class="sub">Multi-AZ 구축</span></h3>
+            <p class="card-role">AA (Application Architect)</p>
+            <p class="card-desc">AWS 클라우드 환경에서 L4 로드밸런서와 WAF를 IaC로 연동하고 자동화했습니다.</p>
+            <ul class="card-points">
+              <li>L4·WAF 연동 요구사항 분석 및 서비스 활용 방안 설계</li>
+              <li>운영 중 발생 가능한 공격에 대비한 WAF 룰셋 최적화 및 적용</li>
+              <li>L4·WAF 인프라를 IaC로 관리해 배포 속도와 관리 효율 개선</li>
+            </ul>
+            <ul class="tags" aria-label="사용 기술">
+              <li>AWS</li><li>IaC</li><li>L4</li><li>WAF</li><li>Multi-AZ</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="card">
+          <p class="period"><span>2023.06 – 2024.01</span></p>
+          <div>
+            <h3 class="card-title"><span class="client">KB헬스케어</span><span class="sub">디지털 헬스케어 B2C/B2B 통합 플랫폼</span></h3>
+            <p class="card-role">AA (Application Architect)</p>
+            <p class="card-desc">웰니스·메디컬·커머스를 하나로 묶은 건강 금융 관리 플랫폼의 애플리케이션 아키텍처를 설계했습니다.</p>
+            <ul class="card-points">
+              <li>MSA 기반의 확장 가능한 구조 설계, 클린 아키텍처와 DDD로 유지보수성 강화</li>
+              <li>Spring Boot·Vue.js 개발 가이드, 코드 컨벤션, 배포 프로세스 표준화</li>
+              <li>Kubernetes 위에 Jenkins·GitLab·ArgoCD CI/CD 구축, JUnit·SonarQube 품질 점검 통합</li>
+              <li>서비스별 Gateway·인증 서버와 서비스/고객사/입점사 관리자 시스템 설계</li>
+              <li>LoadRunner로 서비스별 부하 테스트 후 KB금융 임직원 대상 시범 운영</li>
+            </ul>
+            <p class="metric"><span><b>2M</b> MAU</span><span><b>27,000</b>명 시범 운영</span></p>
+            <ul class="tags" aria-label="사용 기술">
+              <li>Spring Boot</li><li>AKS</li><li>MSA</li><li>DDD</li><li>ArgoCD</li><li>SonarQube</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="card">
+          <p class="period"><span>2023.02 – 2023.05</span></p>
+          <div>
+            <h3 class="card-title"><span class="client">신한금융투자</span><span class="sub">DevOps 및 업무지원 포털 구축</span></h3>
+            <p class="card-role">개발</p>
+            <p class="card-desc">워크플로우 기반으로 개발 업무를 지원하는 시스템과 DevOps 포털을 개발했습니다.</p>
+            <ul class="card-points">
+              <li>업무별 표준 프로세스 정의, 요청서 기반 부서 간 협업 워크플로우 구현</li>
+              <li>클라우드 기반 CI/CD 파이프라인 자동화 및 업무지원 포털 연동</li>
+            </ul>
+            <ul class="tags" aria-label="사용 기술">
+              <li>Workflow</li><li>CI/CD</li><li>DevOps</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="card">
+          <p class="period"><span>2022.05 – 2022.12</span></p>
+          <div>
+            <h3 class="card-title"><span class="client">KB카드</span><span class="sub">웹 기반 공통 프레임워크 · 표준 개발 환경</span></h3>
+            <p class="card-role">개발 PL</p>
+            <p class="card-desc">컨테이너 플랫폼과 DevOps 파이프라인을 구축해 표준화된 개발 환경을 제공했습니다.</p>
+            <ul class="card-points">
+              <li>TKG 기반 배포 환경, Istio·Contour로 플랫폼 내외부 연계 네트워크 설계</li>
+              <li>GitLab·Jenkins·Harbor·Nexus·ArgoCD 툴체인 구축</li>
+              <li>Spring MVC·Spring Boot·Node.js·Vue.js 템플릿을 카탈로그로 제공</li>
+              <li>배치·공통코드·메시징·암복호화 공통 기능을 MSA로 전환해 API로 제공</li>
+            </ul>
+            <ul class="tags" aria-label="사용 기술">
+              <li>Spring Boot</li><li>TKG</li><li>Istio</li><li>ArgoCD</li><li>Harbor</li><li>MSA</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="card">
+          <p class="period"><span>2021.06 – 2021.12</span></p>
+          <div>
+            <h3 class="card-title"><span class="client">신한금융투자</span><span class="sub">ICT 시스템 현대화 사업</span></h3>
+            <p class="card-role">MSA 컨설팅 &amp; 개발 PL</p>
+            <p class="card-desc">클라우드·Kubernetes·MSA 전환을 위한 컨설팅과 POC를 진행했습니다.</p>
+            <ul class="card-points">
+              <li>Spring Cloud (Kubernetes, Config, Gateway, Resilience4j) 기반 MSA 설계</li>
+              <li>Gateway Admin Portal API 설계·개발, 클라우드 표준 아키텍처 수립</li>
+              <li>NATS 기반 초저지연 실시간 시세 처리 POC: 우선호가 <span class="num">900/s</span>, 체결 <span class="num">2,000/s</span></li>
+            </ul>
+            <p class="metric"><span><b>50,000</b> TPS 채널 처리 환경</span></p>
+            <ul class="tags" aria-label="사용 기술">
+              <li>Spring Cloud</li><li>Kubernetes</li><li>NATS</li><li>Resilience4j</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="card">
+          <p class="period"><span>2020.08 – 2021.03</span></p>
+          <div>
+            <h3 class="card-title"><span class="client">EBS</span><span class="sub">온라인클래스 재구조화 사업</span></h3>
+            <p class="card-role">개발 PL</p>
+            <p class="card-desc">전국 초중고 학생이 쓰는 온라인 교육 시스템을 대규모 트래픽에 맞게 다시 설계했습니다.</p>
+            <ul class="card-points">
+              <li>통합회원 인증 DB와 전국 17개 교육청 DB 설계 (학교별 Tenant)</li>
+              <li>Redis Cluster 기반 통합 인증으로 동시접속 80만 로그인 처리</li>
+              <li>트래픽에 따른 Pod Auto Scaling, Feign Client 서비스 간 통신 설계</li>
+            </ul>
+            <p class="metric"><span>평균 동접 <b>800K</b></span><span>최대 <b>3M</b></span></p>
+            <ul class="tags" aria-label="사용 기술">
+              <li>Spring Boot</li><li>Redis Cluster</li><li>MySQL</li><li>Naver Cloud</li><li>MSA</li>
+            </ul>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- Side Projects -->
+    <section id="side-projects" class="section" aria-label="Side Projects">
+      <div class="section-head"><h2>Side Projects</h2></div>
+      <p class="section-lede">업무 밖에서 직접 만들어 매일 쓰고 있는 도구들입니다. 반복되는 일을 LLM과 자동화로 줄이는 데 관심이 많습니다.</p>
+      <ol class="cards">
+
+        <li class="card">
+          <p class="period kind"><span>Desktop App</span></p>
+          <div>
+            <h3 class="card-title"><span class="client">Robin Foundry Blog</span><span class="sub">블로그 운영 자동화 스튜디오</span></h3>
+            <p class="card-desc">원고 작성부터 발행, 카드뉴스, 리포스트, 검색엔진 색인 제출, 키워드 인사이트까지 블로그 운영 전 과정을 한 앱에서 처리합니다.</p>
+            <ul class="card-points">
+              <li>Electron 셸 + React 렌더러 + 로컬 FastAPI 백엔드 구조의 macOS 앱</li>
+              <li>Playwright로 네이버 · 티스토리 · Blogger · WordPress 발행 자동화</li>
+              <li>ChatGPT · Gemini 구조화 출력으로 원고 생성, 자체 카드뉴스 생성 엔진</li>
+              <li>기능 단위로 재구성해 상용 배포용 앱 패키징까지 완료</li>
+            </ul>
+            <ul class="tags" aria-label="사용 기술">
+              <li>Electron</li><li>React</li><li>FastAPI</li><li>SQLite</li><li>Playwright</li><li>LLM</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="card">
+          <p class="period kind"><span>Web App</span></p>
+          <div>
+            <h3 class="card-title"><span class="client">Shorts Maker</span><span class="sub">쇼츠 레퍼런스 랭킹 + 자동 제작</span></h3>
+            <p class="card-desc">키워드로 최근 유튜브 쇼츠를 모아 조회수 지표로 순위를 매기고, 고른 영상을 재료로 1080×1920 쇼츠를 자동으로 만듭니다.</p>
+            <ol class="pipeline" aria-label="제작 파이프라인 9단계">
+              <li>추출</li><li>대본</li><li>장면 매칭</li><li>자막 제거</li><li>TTS</li><li>꾸미기</li><li>썸네일</li><li>제목·태그</li><li>렌더</li>
+            </ol>
+            <ul class="card-points">
+              <li>Gemini 화면 분석 · 대본 생성, faster-whisper 로컬 STT, ElevenLabs TTS</li>
+              <li>OCR로 자막 위치를 찾고 LaMa 인페인팅으로 지우는 자막 제거 (Apple GPU 가속)</li>
+              <li>DB 작업 큐 + asyncio 워커, 하루 1회 자동 수집 스케줄러</li>
+            </ul>
+            <ul class="tags" aria-label="사용 기술">
+              <li>FastAPI</li><li>ffmpeg</li><li>OpenCV</li><li>Gemini</li><li>Whisper</li><li>yt-dlp</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="card">
+          <p class="period kind"><span>Local Service</span></p>
+          <div>
+            <h3 class="card-title"><span class="client">Robin Library</span><span class="sub">로컬 문서 기반 지식 RAG</span></h3>
+            <p class="card-desc">내 컴퓨터의 문서와 코드를 감시해 자동으로 인덱싱하고, 자연어로 찾아 원문까지 바로 보여주는 개인 지식 검색 서비스입니다. 로그인하면 자동으로 뜨는 상시 서비스로 운영하고 있습니다.</p>
+            <ul class="card-points">
+              <li>파일 생성 · 수정 · 삭제를 감지해 문장/코드 단위로 청크를 나누고 임베딩</li>
+              <li>Qwen3-Embedding + Qdrant 벡터 검색에 한국어 · 식별자 검색을 더한 하이브리드 검색</li>
+              <li>Apple MPS 가속 인덱싱: 청크당 <span class="num">0.19s</span>, CPU 대비 약 <span class="num">45×</span></li>
+              <li>검색 결과 판단에 Jev를 연결해 켬/끔 결과를 비교</li>
+            </ul>
+            <ul class="tags" aria-label="사용 기술">
+              <li>Python</li><li>FastAPI</li><li>Qdrant</li><li>Qwen3-Embedding</li><li>SQLite</li><li>RAG</li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="card">
+          <p class="period kind"><span>PoC</span></p>
+          <div>
+            <h3 class="card-title"><span class="client">Jev Decision Lab</span><span class="sub">판단 모델 Jev 실효성 검증</span></h3>
+            <p class="card-desc">TypeSafe의 판단 모델 Jev(System One)가 실제 업무 판단에 쓸 만한지 두 가지 실험으로 검증했습니다.</p>
+            <ul class="card-points">
+              <li>RSS 뉴스 분류 · 가치 평가 · 라우팅: 기사당 한 번의 호출로 6개 질문을 병렬 평가하고, PASS / REVIEW / DROP 판정은 코드의 임계값이 결정</li>
+              <li>Jev · LLM · 규칙 · Mock 엔진을 같은 인터페이스로 비교하고, 반복 평가로 판단 안정성 측정</li>
+              <li>BTC/USDT 실데이터 재생 기반 가상 매매 시뮬레이션: 확정 캔들만 써서 백테스트 무결성을 지키고, 오류·타임아웃이면 주문 없이 HOLD</li>
+            </ul>
+            <ul class="tags" aria-label="사용 기술">
+              <li>TypeSafe Jev</li><li>FastAPI</li><li>HTMX</li><li>React</li><li>CCXT</li><li>SQLite</li>
+            </ul>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience" class="section" aria-label="Experience">
+      <div class="section-head"><h2>Experience</h2></div>
+      <ol class="cards">
+
+
+        <li class="card">
+          <p class="period"><span>2025.05 – 현재</span><span class="now">진행 중</span><span>2024.05 – 2025.02</span><span>2019.06 – 2020.03</span><span>2014.10 – 2018.01</span></p>
+          <div>
+            <h3 class="card-title exp-company">프리랜서<span class="exp-count">6 PROJECTS</span></h3>
+            <ul class="exp-list">
+              <li><span class="p-name">국토교통부 KLIP 구축 사업<i>인프라 · 플랫폼 전환, Kafka CDC, 통합연계체계 설계 · 구현</i></span><span class="p-tech">OpenStack · Kolla-Ansible · Kubernetes · GitOps · Kafka CDC · Spring Cloud Gateway · EDB Postgres HA</span></li>
+              <li><span class="p-name">HR 솔루션<i>설계·개발, 개발 인프라 구축</i></span><span class="p-tech">Native Kubernetes · GitOps · Spring Boot · Hexagonal · DDD</span></li>
+              <li><span class="p-name">해양수산부 해양공간관리 시스템<i>개발</i></span><span class="p-tech">전자정부 프레임워크 · PostgreSQL · GIS</span></li>
+              <li><span class="p-name">온라인 게임 서비스 백엔드<i>설계·개발</i></span><span class="p-tech">PHP Laravel · MySQL</span></li>
+              <li><span class="p-name">법제처 통합 정부입법 시스템<i>개발</i></span><span class="p-tech">전자정부 프레임워크 · Oracle</span></li>
+              <li><span class="p-name">경찰청 목격자 제보 시스템<i>개발 PL</i></span><span class="p-tech">전자정부 프레임워크 · Oracle · Angular</span></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="card">
+          <p class="period"><span>2021.06 – 2024.05</span></p>
+          <div>
+            <h3 class="card-title exp-company">스트라토<span class="exp-count">5 PROJECTS</span></h3>
+            <ul class="exp-list">
+              <li><span class="p-name">KB국민은행 Multi-AZ 구축<i>AA</i></span><span class="p-tech">AWS · IaC · L4 · WAF</span></li>
+              <li><span class="p-name">KB헬스케어 통합 플랫폼<i>AA</i></span><span class="p-tech">Spring Boot · AKS · MSA</span></li>
+              <li><span class="p-name">KB카드 표준 개발 환경<i>개발 PL</i></span><span class="p-tech">Spring Boot · TKG · MSA</span></li>
+              <li><span class="p-name">신한금융투자 ICT 현대화<i>개발 PL</i></span><span class="p-tech">Spring Boot · Spring Cloud · Kubernetes · MSA</span></li>
+              <li><span class="p-name">사내 솔루션 MSA Framework<i>설계·개발</i></span><span class="p-tech">Spring Cloud · Kubernetes · Gateway/Routing 관리 · 로그 시각화</span></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="card">
+          <p class="period"><span>2020.08 – 2021.03</span></p>
+          <div>
+            <h3 class="card-title exp-company">쉐어마인드<span class="exp-count">2 PROJECTS</span></h3>
+            <ul class="exp-list">
+              <li><span class="p-name">EBS 온라인클래스 재구조화<i>개발 PL</i></span><span class="p-tech">Spring Boot · MySQL · Naver Cloud · MSA</span></li>
+              <li><span class="p-name">EBS 온라인클래스 운영<i>운영팀장</i></span><span class="p-tech">Spring MVC · Oracle</span></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="card">
+          <p class="period"><span>2018.02 – 2019.05</span></p>
+          <div>
+            <h3 class="card-title exp-company">해커스<span class="exp-count">1 PROJECT</span></h3>
+            <ul class="exp-list">
+              <li><span class="p-name">시스템 통합<i>설계·개발</i></span><span class="p-tech">PHP Laravel · MySQL · AWS</span></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="card">
+          <p class="period"><span>2010.07 – 2014.09</span></p>
+          <div>
+            <h3 class="card-title exp-company">메가존<span class="exp-count">3 PROJECTS</span></h3>
+            <ul class="exp-list">
+              <li><span class="p-name">아시아나 차세대 글로벌<i>개발 PL</i></span><span class="p-tech">Spring MVC · Oracle</span></li>
+              <li><span class="p-name">삼성전자 TV-Store<i>운영팀장</i></span><span class="p-tech">Spring MVC · Oracle</span></li>
+              <li><span class="p-name">삼성전자 A-Store<i>개발</i></span><span class="p-tech">Spring MVC · Oracle</span></li>
+            </ul>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills" class="section" aria-label="Skills">
+      <div class="section-head"><h2>Skills</h2></div>
+      <div class="skills">
+        <div class="skill-row">
+          <h3>Backend</h3>
+          <ul class="tags">
+            <li>Java</li><li>Spring Boot</li><li>Spring Cloud</li><li>Spring Security</li><li>Spring Data JPA</li><li>Spring Batch</li><li>Spring MVC</li><li>Spring Cloud Gateway</li><li>Quartz</li><li>JBoss EAP</li><li>Kafka</li><li>Redis</li>
+          </ul>
         </div>
-    </div>
-</div>
-<main class="page-content" aria-label="Content">
-    <div class="wrapper"><div class="container intro-container">
-        <h3 id="about-me">About Me</h3>
-        <div class="row clearfix"><div class="col-xs-12 col-sm-4 col-md-3 no-print">
-            <span class="profile-img" style="background-image: url(/images/profile.jpg)"></span>
-        </div><div class="col-xs-12 col-sm-8 col-md-9 col-print-12">
-            <p>Java &amp; Spring / Cloud &amp; Kubernet 기반의 20년차 서버 백엔드 개발자로
-                <strong>동접 80만</strong> 통합회원 에듀테크 서비스, <strong>MAU 200만</strong> 이상의 헬스케어 등의 서비스에서 분석/설계 및 개발 리드의 역할을 담당하며
-                백엔드 플랫폼 개발 및 클라우드 인프라 구축 등을 해왔습니다.
-                <br />
-                클라우드 환경의 원할한 개발과 배포를 위해 on-premise <mark>Kubernetes cluster 개발 환경</mark>을 직접 설치/구축 및 구성하여 개발 및 테스트를 진행함으로써,
-                예측 가능한 개발을 통해 실질적 가치를 창출할수 있도록 집중하고 있습니다. <br />
-                탁월한 실력을 자랑하는 개발자는 아니지만, <mark>지속적인 학습과 끊임없는 노력과 소통</mark>을 통해 함께 성장하고 발전하는데 기여하고 싶습니다.
-                <br /><br />
-                생년월일 : 1976년생 <br />
-                주소 : 인천광역시 부평구 <br />
+        <div class="skill-row">
+          <h3>Cloud / Infra</h3>
+          <ul class="tags">
+            <li>OpenStack</li><li>Kolla-Ansible</li><li>RHEL</li><li>Calico</li><li>nftables</li><li>Native Kubernetes</li><li>EKS</li><li>AKS</li><li>TKG</li><li>EC2</li><li>S3</li><li>RDS Aurora</li><li>cert-manager</li><li>Let's Encrypt</li>
+          </ul>
         </div>
+        <div class="skill-row">
+          <h3>DevOps</h3>
+          <ul class="tags">
+            <li>GitLab</li><li>Harbor</li><li>Argo CD</li><li>Skaffold</li><li>Kustomize</li><li>Grafana</li><li>Jenkins</li><li>Docker</li><li>HAProxy</li><li>Nginx</li><li>Tomcat</li><li>Ubuntu</li>
+          </ul>
         </div>
-    </div>
-        <div class="container experience-container">
-            <h3>Projects</h3>
-
-            <div class="row clearfix layout layout-left">
-                <div class="col-xs-12 col-sm-4 col-md-3 col-print-12 details"><h4>KB국민은행</h4>
-                    <span style="font-size: 1.3em; ">Multi-AZ 구축</span><p><b>AA (Application Architect)</b></p><p>2024.03 ~ 2024.05</p></div>
-                <div class="col-xs-12 col-sm-8 col-md-9 col-print-12"><p class="quote">AWS Cloud 환경 L4 및 WAF IaC 연동
-                </p><ul>
-                    <li>L4 및 WAF 연동을 위한 요구사항 분석 및 서비스 활용 방안 설계</li>
-                    <li>운영 중 발생 가능한 보안을 위한 WAF 룰셋 최적화 및 적용</li>
-                    <li>L4 로드 밸런서 및 WAF(Web Application Firewall) 인프라를 IaC(Infrastructure as Code)로 관리 및 자동화</li>
-                    <li>IaC를 통해 클라우드 인프라의 배포 속도 향상, 관리 효율성 극대화</li>
-                </ul>
-
-                </div>
-            </div>
-
-
-            <div class="row clearfix layout layout-left">
-                <div class="col-xs-12 col-sm-4 col-md-3 col-print-12 details"><h4>KB헬스케어</h4>
-                    <span style="font-size: 1.3em; ">디지털 헬스케어 B2C/B2B 통합 플랫폼 구축</span><p><b>AA (Application Architect)</b></p><p>2023.06 ~ 2024.01</p></div>
-                <div class="col-xs-12 col-sm-8 col-md-9 col-print-12"><p class="quote">MAU 200만 & 웰니스, 메디컬, 커머스 서비스를 통합하여 B2C 및 B2B 고객 대상의 건강 금융 관리 플랫폼 제공
-                </p><ul>
-                    <li><strong>플랫폼 아키텍처 설계플랫폼 아키텍처 설계</strong>
-                        <ul><li>B2C/B2B 통합 플랫폼의 애플리케이션 아키텍처 설계</li>
-                            <li>MSA 기반 어플리케이션 설계를 통한 확장 가능한 시스템 구조 설계</li>
-                            <li>클린 아키텍처 및 DDD(Domain-Driven Design) 패턴을 활용하여 유지보수성과 확장성을 강화</li>
-                        </ul>
-                    </li>
-                    <li><strong>백엔드/프론트엔드 개발 가이드 및 표준 작성</strong>
-                        <ul>
-                            <li>백엔드(Spring Boot)와 프론트엔드(VueJs) 개발 가이드 작성 및 표준 제공</li>
-                            <li>코드 품질 향상 및 일관성 있는 개발 환경을 구축하기 위한 Best Practice 제공</li>
-                            <li>각 개발팀에서 준수해야 할 코드 컨벤션과 배포 프로세스 문서화</li>
-                        </ul>
-                    </li>
-                    <li><strong>CI/CD 환경 구축</strong>
-                        <ul>
-                            <li>Kubernetes OSS 설치 및 설정을 통해 어플리케이션 배포 환경 구축</li>
-                            <li>Jenkins 기반 빌드 파이프라인 작성 및 자동화된 배포 프로세스 구현 (ArgoCD & Gitlab)</li>
-                            <li>CI/CD 파이프라인에서 테스트 자동화(Junit) 및 코드 품질 점검(Sonarqube) 통합</li>
-                        </ul>
-                    </li>
-                    <li><strong>관리자 시스템 설계 및 구현</strong>
-                        <ul>
-                            <li>서비스 관리자, 고객사 관리자, 입점사 관리자 웹 시스템 설계</li>
-                            <li>각 서비스별 Gateway, 인증서버 설계 구축</li>
-                            <li>메디컬 웹(병의원 검색 및 진료 기록) 및 메디컬 관리자 웹(권한 관리 및 통계 서비스) 설계</li>
-                        </ul>
-                    </li>
-                    <li><strong>대규모 사용자 대상 성능 테스트 및 시범 운영</strong>
-                        <ul>
-                            <li>로드러너 이용 마이크로 서비스별 부하 및 성능 테스트 진행</li>
-                            <li>KB금융 임직원 27,000명을 대상으로 시범 운영</li>
-                        </ul>
-                    </li>
-
-                </ul>
-
-                </div>
-            </div>
-
-            <div class="row clearfix layout layout-left">
-                <div class="col-xs-12 col-sm-4 col-md-3 col-print-12 details"><h4>신한금융투자</h4>
-                    <span style="font-size: 1.3em; ">Devops 및 업무지원 포털 구축</span><p><b>개발</b></p><p>2023.02 ~ 2023.05</p></div>
-                <div class="col-xs-12 col-sm-8 col-md-9 col-print-12"><p class="quote">워크플로우 기반 개발 업무지원을 위한 시스템 개발
-                </p><ul>
-                    <li><strong>업무지원 시스템 개발</strong>
-                        <ul><li>업무별 표준 프로세스 정의 및 설계</li>
-                            <li>업무 요청서기반 업무 부서별 협업을 위한 개발 업무 워크플로우 기능 구현</li>
-                        </ul>
-                    </li>
-                    <li><strong>DevOps 포털</strong>
-                        <ul>
-                            <li>클라우드 기반 CI/CD 파이프라인 자동화 구축</li>
-                            <li>업무지원 포털 연동</li>
-                        </ul>
-                    </li>
-                </ul>
-                </div>
-            </div>
-
-
-            <div class="row clearfix layout layout-left">
-                <div class="col-xs-12 col-sm-4 col-md-3 col-print-12 details"><h4>KB카드</h4>
-                    <span style="font-size: 1.3em; ">웹기반 공통 프레임워크 개발을 통한 표준 개발 환경 구축</span><p><b>개발PL</b></p><p>2022.05 ~ 2022.12</p></div>
-                <div class="col-xs-12 col-sm-8 col-md-9 col-print-12"><p class="quote">컨테이너 플랫폼 및 DevOps 파이프라인 구축을 통해 표준화된 개발 환경 제공
-                </p><ul>
-                    <li><strong>컨테이너 플랫폼 구축</strong>
-                        <ul><li>컨테이너 플랫폼 내외부 연계 네트워크 환경 설계 및 구현 (Istio/Contour)</li>
-                            <li>TKG(Tanzu Kubernetes Grid) 기반의 어플리케이션 배포 및 관리 환경 구축</li>
-                            <li>Devops Toolchain 설치/설정 (Gitlab, Jenkins, Harbor, Nexus, ArgoCD)</li>
-                        </ul>
-                    </li>
-                    <li><strong>DevOps 파이프라인 설계</strong>
-                        <ul>
-                            <li>Spring MVC, Springboot, Node.js, VueJs 등 다양한 글로벌 프레임워크를 카탈로그 형태로 제공</li>
-                            <li>CI/CD 파이프라인 자동화 구축</li>
-                        </ul>
-                    </li>
-                    <li><strong>MSA 전환</strong>
-                        <ul>
-                            <li>배치, 공통코드, 메시징, 암복호화 등의 공통 기능을 MSA로 전환</li>
-                            <li>전환된 공통 서비스는 각 업무 시스템에 API 제공</li>
-                        </ul>
-                    </li>
-                </ul>
-                </div>
-            </div>
-
-            <div class="row clearfix layout layout-left">
-                <div class="col-xs-12 col-sm-4 col-md-3 col-print-12 details"><h4>신한금융투자</h4>
-                    <span style="font-size: 1.3em; ">신한금융투자 ICT 시스템 현대화 사업</span><p><b>MSA 컨설팅 & 개발PL</b></p><p>2021.06 ~ 2021.12</p></div>
-                <div class="col-xs-12 col-sm-8 col-md-9 col-print-12"><p class="quote">클라우드, Kubernetes, DevOps 및 마이크로서비스 설계 및 구현을 위한 컨설팅과 POC 진행
-                </p><ul>
-                    <li><strong>MSA 컨설팅 현행 분석</strong>
-                        <ul><li>spring cloud 기반 MSA 설계 방안</li>
-                            <li>spring cloud kubernetes, spring cloud config, spring cloud  gateway, spring cloud circuitbreaker (resilience4j)</li>
-                            <li>GATEWAY ADMIN PORTAL API 설계/개발</li>
-                            <li>클라우드 및 Kubernetes 기반의 표준 아키텍처 설계 방안</li>
-                        </ul>
-                    </li>
-                    <li><strong>MSA POC 진행</strong>
-                        <ul>
-                            <li>실시간 시세 데이터 등록 및 전달 시스템 설계</li>
-                            <li>Nats 기반 초저지연 메시지 처리 POC 수행</li>
-                            <li>국내 시세 데이터 기준 우선호가 900/s, 체결 2,000/s 처리 성공</li>
-                            <li>채널 전체 요청 50,000TPS 처리 가능 환경 구축</li>
-                        </ul>
-                    </li>
-                </ul>
-                </div>
-            </div>
-
-            <div class="row clearfix layout layout-left">
-                <div class="col-xs-12 col-sm-4 col-md-3 col-print-12 details"><h4>EBS</h4>
-                    <span style="font-size: 1.3em; ">EBS 온라인클래스 재구조화 사업</span><p><b>개발PL</b></p><p>2020.08 ~ 2021.03</p></div>
-                <div class="col-xs-12 col-sm-8 col-md-9 col-print-12"><p class="quote">평균 동시 접속 80만, 최대 300만 명을 지원하는 초중고 온라인 교육시스템
-                </p><ul>
-                    <li><strong>대규모 트래픽 처리 시스템 설계 및 개발</strong>
-                        <ul><li>통합회원 인증 DB 및 전국 17개 교육청 산하 DB 설계 (각 학교별 Tenant)</li>
-                            <li>트래픽 증가 시 Pod Auto Scale In/Out 구현</li>
-                        </ul>
-                    </li>
-                    <li><strong>MSA 기반 애플리케이션 설계 및 개발</strong>
-                        <ul>
-                            <li>Feign Client를 활용한 마이크로서비스 간 내부 통신 설계 및 구현</li>
-                            <li>동접 80만 로그인 처리를 위한 통합인증 서비스 구현 (Redis Cluster)</li>
-                        </ul>
-                    </li>
-                </ul>
-                </div>
-            </div>
+        <div class="skill-row">
+          <h3>AI / LLM</h3>
+          <ul class="tags">
+            <li>Claude Code</li><li>Codex</li><li>Python</li><li>LangGraph</li><li>Agent</li><li>RAG</li><li>Qdrant</li><li>Embedding</li><li>FastAPI</li><li>Gemini · ChatGPT</li>
+          </ul>
         </div>
-        <div class="container projects-container">
-            <h3>Experience</h3>
-            <div class="row clearfix layout layout-top-middle">
-                <div class="col-xs-12 col-print-12">
-                    <table class="table table-bordered">
-                        <colgroup>
-                            <col style="width: 30%;">
-                            <col style="width: 70%;">
-                        </colgroup>
-                        <thead>
-                        <tr>
-                            <th>소속</th>
-                            <th>업무</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>프리랜서
-                                <br><span style="font-size: 0.85em; color: #777;">2024.05 ~ 2025.02</span>
-                                <br><span style="font-size: 0.85em; color: #777;">2019.06 ~ 2020.03</span>
-                                <br><span style="font-size: 0.85em; color: #777;">2014.10 ~ 2018.01</span></td>
-                            <td>
-                                <ul style="padding-left: 15px; margin-top: 5px;">
-                                    <li><strong>HR 솔루션</strong>
-                                        <ul style="padding-left: 15px;">
-                                            <li>역할: 설계 및 개발, 개발 인프라 구축</li>
-                                            <li>주요 기술: Native Kubernetes Cluster 설치 및 설정, Gitops, Springboot, 헥사고날아키텍처, DDD 패턴의 어플리케이션 설계</li>
-                                        </ul>
-                                    </li>
-                                    <li><strong>해양수산부 해양공간관리 시스템</strong>
-                                        <ul style="padding-left: 15px;">
-                                            <li>역할: 개발</li>
-                                            <li>주요 기술: 전자정부 프레임워크, Postgres, GIS</li>
-                                        </ul>
-                                    </li>
-                                    <li><strong>온라인 게임 서비스 백엔드</strong>
-                                        <ul style="padding-left: 15px;">
-                                            <li>역할: 설계 및 개발</li>
-                                            <li>주요 기술: PHP Laravel, MySql</li>
-                                        </ul>
-                                    </li>
-                                    <li><strong>법제처 통합 정부입법 시스템 </strong>
-                                        <ul style="padding-left: 15px;">
-                                            <li>역할: 개발</li>
-                                            <li>주요 기술: 전자정부 프레임워크, Oracle</li>
-                                        </ul>
-                                    </li>
-                                    <li><strong>경찰청 목겨자 제보 시스템</strong>
-                                        <ul style="padding-left: 15px;">
-                                            <li>역할: 개발PL</li>
-                                            <li>주요 기술: 전자정부 프레임워크, Oracle, Angular</li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td >스트라토<br><span style="font-size: 0.85em; color: #777;">2021.06 ~ 2024.05</span></td>
-                            <td >
-                                <ul style="padding-left: 15px; margin-top: 5px;">
-                                    <li><strong>KB국민은행 Multi-AZ 구축</strong>
-                                        <ul style="padding-left: 15px;">
-                                            <li>역할: AA (Application Architect)</li>
-                                            <li>주요 기술: AWS, IaC, L4, WAF</li>
-                                        </ul>
-                                    </li>
-                                    <li><strong>KB헬스케어 디지털 헬스케어 B2C/B2B 통합 플랫폼</strong>
-                                        <ul style="padding-left: 15px;">
-                                            <li>역할: AA (Application Architect)</li>
-                                            <li>주요 기술: Spring Boot, AKS, MSA</li>
-                                        </ul>
-                                    </li>
-                                    <li><strong>KB카드</strong>
-                                        <ul style="padding-left: 15px;">
-                                            <li>역할: 개발PL</li>
-                                            <li>주요 기술: Spring Boot, TKG, MSA</li>
-                                        </ul>
-                                    </li>
-                                    <li><strong>신한금융투자</strong>
-                                        <ul style="padding-left: 15px;">
-                                            <li>역할: 개발PL</li>
-                                            <li>주요 기술: Spring Boot, Spring Cloud, Kubernetes, MSA</li>
-                                        </ul>
-                                    </li>
-                                    <li><strong>사내 솔루션 MSA Framework</strong>
-                                        <ul style="padding-left: 15px;">
-                                            <li>역할: 설계 및 개발</li>
-                                            <li>주요 기술: Spring Boot, Spring Cloud, Kubernetes, MSA, Gateway 관리, Routing 관리, 로그 시각화
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>쉐어마인드<br><span style="font-size: 0.85em; color: #777;">2020.08 ~ 2021.03</span></td>
-                            <td>
-                                <ul style="padding-left: 15px; margin-top: 5px;">
-                                    <li><strong>EBS 온라인클래스 재구조화</strong>
-                                        <ul style="padding-left: 15px;">
-                                            <li>역할: 개발PL</li>
-                                            <li>주요 기술: Springboot, MySql, Naver Cloud, MSA</li>
-                                        </ul>
-                                    </li>
-                                    <li><strong>EBS 온라인클래스 운영</strong>
-                                        <ul style="padding-left: 15px;">
-                                            <li>역할: 운영팀장</li>
-                                            <li>주요 기술: Spring MVC, Oracle</li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>해커스<br><span style="font-size: 0.85em; color: #777;">2018.02 ~ 2019.05</span></td>
-                            <td>
-                                <ul style="padding-left: 15px; margin-top: 5px;">
-                                    <li><strong>시스템 통합</strong>
-                                        <ul style="padding-left: 15px;">
-                                            <li>역할: 설계 및 개발</li>
-                                            <li>주요 기술: PHP Laravel, MySql, AWS</li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>메가존<br><span style="font-size: 0.85em; color: #777;">2010.07 ~ 2014.09</span></td>
-                            <td>
-                                <ul style="padding-left: 15px; margin-top: 5px;">
-                                    <li><strong>아시아나 차세대 글로벌</strong>
-                                        <ul style="padding-left: 15px;">
-                                            <li>역할: 개발PL</li>
-                                            <li>주요 기술: Spring MVC, Oracle</li>
-                                        </ul>
-                                    </li>
-                                    <li><strong>삼성전자 TV-Store</strong>
-                                        <ul style="padding-left: 15px;">
-                                            <li>역할: 운영팀장</li>
-                                            <li>주요 기술: Spring MVC, Oracle</li>
-                                        </ul>
-                                    </li>
-                                    <li><strong>삼성전자 A-Store</strong>
-                                        <ul style="padding-left: 15px;">
-                                            <li>역할: 개발</li>
-                                            <li>주요 기술: Spring MVC, Oracle</li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="skill-row">
+          <h3>Data</h3>
+          <ul class="tags plain">
+            <li>PostgreSQL · EDB</li><li>PostGIS</li><li>pgpool-II</li><li>Strimzi Kafka</li><li>Debezium CDC</li><li>Oracle</li><li>MySQL</li><li>MariaDB</li><li>JPA</li><li>Hibernate</li><li>QueryDSL</li><li>MyBatis</li>
+          </ul>
         </div>
-
-        <div class="container education-container">
-            <h3>Skill</h3>
-            <p class="quote">현재 업무에 사용중 혹은 사용했던 기술들입니다.</p>
-
-            <div class="row clearfix layout layout-left">
-                <div class="col-xs-12 col-sm-4 col-md-3 col-print-12 details"><h4>Backend</h4></div>
-                <div class="col-xs-12 col-sm-8 col-md-9 col-print-12"><ul>
-
-                    <li>Java, Spring Boot, Spring MVC, Spring Batch, Spring Security, Spring Data JPA, Kafka, Redis, Spring Cloud</li>
-                    <li>JPA, Querydsl, MyBatis, Hibernate</li>
-                    <li>Junit4/5, Mockito</li>
-                    <li>Gradle, Maven</li>
-                    <li>IntelliJ, WebStorm, Visual Studio Code</li>
-                </ul>
-
-                </div>
-            </div>
-
-
-            <div class="row clearfix layout layout-left">
-                <div class="col-xs-12 col-sm-4 col-md-3 col-print-12 details"><h4>Cloud</h4></div>
-                <div class="col-xs-12 col-sm-8 col-md-9 col-print-12"><ul>
-                    <li>EKS, AKS, TKG, Native Kubernetes</li>
-                    <li>Oracle, MySQL, MariaDB, Postgres</li>
-                    <li>Jenkins, Gitlab, ArgoCD, Harbor, Docker</li>
-                    <li>RDS (Aurora), S3, EC2</li>
-                    <li>Nginx, Tomcat</li>
-                    <li>Cert Manage, LetsEncrypt</li>
-                    <li>Ubuntu</li>
-                </ul>
-
-                </div>
-            </div>
-
-
-            <div class="row clearfix layout layout-left">
-                <div class="col-xs-12 col-sm-4 col-md-3 col-print-12 details"><h4>Frontend</h4></div>
-                <div class="col-xs-12 col-sm-8 col-md-9 col-print-12"><ul>
-                    <li>VueJS, React, NextJs</li>
-                    <li>Npm, Yarn</li>
-                </ul>
-
-                </div>
-            </div>
-
-
+        <div class="skill-row">
+          <h3>Test / Build</h3>
+          <ul class="tags plain">
+            <li>JUnit 4/5</li><li>Mockito</li><li>SonarQube</li><li>Gradle</li><li>Maven</li>
+          </ul>
         </div>
-    </div>
-</main>
-<div class="container footer-container">
-    <p>
-        박형준 - References on request</p>
+        <div class="skill-row">
+          <h3>Frontend</h3>
+          <ul class="tags plain">
+            <li>Vue.js</li><li>React</li><li>Next.js</li><li>npm</li><li>Yarn</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
 </div>
 
-<div class="utterances">
-    <iframe class="utterances-frame" title="Comments" scrolling="no" src="https://utteranc.es/utterances.html?src=https%3A%2F%2Futteranc.es%2Fclient.js&amp;repo=jojoldu%2Fjojoldu.github.io&amp;issue-term=pathname&amp;theme=github-light&amp;crossorigin=anonymous&amp;async=&amp;url=https%3A%2F%2Fjojoldu.github.io%2F&amp;origin=https%3A%2F%2Fjojoldu.github.io&amp;pathname=index&amp;title=%EC%9D%B4%EB%8F%99%EC%9A%B1+%7C+%EC%84%9C%EB%B2%84+%EB%B0%B1%EC%97%94%EB%93%9C+%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&amp;description=%EC%9D%B4%EB%A0%A5%EC%84%9C&amp;og%3Atitle=%EC%84%9C%EB%B2%84+%EB%B0%B1%EC%97%94%EB%93%9C+%EC%97%94%EC%A7%80%EB%8B%88%EC%96%B4&amp;session=" loading="lazy"></iframe>
-</div>
+<script>
+  // Cursor spotlight
+  (function () {
+    var el = document.getElementById('spotlight');
+    var raf = 0, x = 0, y = 0;
+    function paint() {
+      raf = 0;
+      el.style.background = 'radial-gradient(600px at ' + x + 'px ' + y + 'px, var(--spot), transparent 80%)';
+    }
+    window.addEventListener('pointermove', function (e) {
+      x = e.clientX; y = e.clientY;
+      if (!raf) raf = requestAnimationFrame(paint);
+    }, { passive: true });
+    x = window.innerWidth * 0.3; y = window.innerHeight * 0.3; paint();
+  })();
 
+  // Active nav on scroll
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('.nav a'));
+    var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+    function update() {
+      var mark = window.innerHeight * 0.35, idx = 0;
+      sections.forEach(function (s, i) { if (s && s.getBoundingClientRect().top <= mark) idx = i; });
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) idx = sections.length - 1;
+      links.forEach(function (a, i) { a.classList.toggle('active', i === idx); });
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  })();
 
-
-<div id="monica-content-root" class="monica-widget" style="pointer-events: auto;"></div></body></html>
+</script>
+</body>
+</html>
